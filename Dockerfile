@@ -30,11 +30,12 @@ RUN CGO_ENABLED=1 GOOS=linux go install -tags blst_enabled -ldflags "-X main.Ver
 #
 # STEP 3: Prepare image to run the binary
 #
-FROM alpine:3.12 AS runner
+FROM ubuntu:20.04 AS runner
 
-# Install ca-certificates, bash
-RUN apk -v --update add ca-certificates bash make  bind-tools && \
-    rm /var/cache/apk/*
+# Install ca-certificates, make
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    ca-certificates make bash \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /go/bin/ssvnode /go/bin/ssvnode
 COPY ./Makefile .env* ./
