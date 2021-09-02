@@ -103,6 +103,7 @@ func (msg *SignedMessage) VerifyAggregatedSig(pks []*bls.PublicKey) (bool, error
 		return false, err
 	}
 	logg += fmt.Sprintf("signature: %s\n", hex.EncodeToString(sig.Serialize()))
+	fmt.Printf("%s", logg)
 	return sig.VerifyByte(aggPK, root), nil
 }
 
