@@ -1,11 +1,17 @@
 package proto
 
 import (
+	"github.com/bloxapp/ssv/utils/logex"
 	"github.com/herumi/bls-eth-go-binary/bls"
+	"go.uber.org/zap/zapcore"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
+
+func init() {
+	logex.Build("test", zapcore.ErrorLevel, nil)
+}
 
 func generateNodes(cnt int) (map[uint64]*bls.SecretKey, map[uint64]*Node) {
 	bls.Init(bls.BLS12_381)

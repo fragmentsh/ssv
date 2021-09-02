@@ -7,7 +7,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/bloxapp/ssv/utils/logex"
 	"github.com/herumi/bls-eth-go-binary/bls"
+	"go.uber.org/zap"
 )
 
 // Compare returns true if both messages are equal.
@@ -103,7 +105,8 @@ func (msg *SignedMessage) VerifyAggregatedSig(pks []*bls.PublicKey) (bool, error
 		return false, err
 	}
 	logg += fmt.Sprintf("signature: %s\n", hex.EncodeToString(sig.Serialize()))
-	fmt.Printf("%s", logg)
+	logex.GetLogger().Debug("VerifyAggregatedSig", zap.String("logg", logg),
+		zap.String("identifier", hex.EncodeToString(msg.Message.Lambda)))
 	return sig.VerifyByte(aggPK, root), nil
 }
 
