@@ -3,6 +3,7 @@ package proto
 import (
 	"bytes"
 	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -62,18 +63,29 @@ func (msg *SignedMessage) VerifyAggregatedSig(pks []*bls.PublicKey) (bool, error
 		return false, errors.New("pks are invalid")
 	}
 
+	logg := ""
+
 	// signer uniqueness
 	err := verifyUniqueSigners(msg.SignerIds)
 	if err != nil {
 		return false, err
 	}
 
+	logg += "signers: "
+	for _, signer := range msg.SignerIds {
+		logg += fmt.Sprintf("%d,", signer)
+	}
+	logg += "\n"
+
 	root, err := msg.Message.SigningRoot()
 	if err != nil {
 		return false, err
 	}
 
+	logg += fmt.Sprintf("root: %s\n", hex.EncodeToString(root))
+
 	// aggregate pks
+	logg += "pks: "
 	var aggPK *bls.PublicKey
 	for _, pk := range pks {
 		if aggPK == nil {
@@ -81,12 +93,16 @@ func (msg *SignedMessage) VerifyAggregatedSig(pks []*bls.PublicKey) (bool, error
 		} else {
 			aggPK.Add(pk)
 		}
+		logg += fmt.Sprintf("%s, ", hex.EncodeToString(pk.Serialize()))
 	}
+	logg += "\n"
+	logg += fmt.Sprintf("aggregated pk: %s\n", hex.EncodeToString(aggPK.Serialize()))
 
 	sig := &bls.Sign{}
 	if err := sig.Deserialize(msg.Signature); err != nil {
 		return false, err
 	}
+	logg += fmt.Sprintf("signature: %s\n", hex.EncodeToString(sig.Serialize()))
 	return sig.VerifyByte(aggPK, root), nil
 }
 
