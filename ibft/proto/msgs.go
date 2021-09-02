@@ -106,7 +106,7 @@ func (msg *SignedMessage) VerifyAggregatedSig(pks []*bls.PublicKey) (bool, error
 	}
 	logg += fmt.Sprintf("signature: %s\n", hex.EncodeToString(sig.Serialize()))
 	logex.GetLogger().Debug("VerifyAggregatedSig", zap.String("logg", logg),
-		zap.String("identifier", hex.EncodeToString(msg.Message.Lambda)))
+		zap.String("identifier", string(msg.Message.Lambda)))
 	return sig.VerifyByte(aggPK, root), nil
 }
 
