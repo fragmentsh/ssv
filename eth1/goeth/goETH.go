@@ -258,6 +258,7 @@ func (ec *eth1Client) syncSmartContractsEvents(fromBlock *big.Int) error {
 	query := ethereum.FilterQuery{
 		Addresses: []common.Address{contractAddress},
 		FromBlock: fromBlock,
+		//ToBlock: eth1.HexStringToSyncOffset("52CF38"),
 	}
 	logs, err := ec.conn.FilterLogs(ec.ctx, query)
 	if err != nil {
@@ -282,7 +283,7 @@ func (ec *eth1Client) syncSmartContractsEvents(fromBlock *big.Int) error {
 }
 
 func (ec *eth1Client) handleEvent(vLog types.Log, contractAbi abi.ABI) error {
-	ec.logger.Debug("handling smart contract event")
+	ec.logger.Debug("handling smart contract event", zap.Any("vLog", vLog))
 
 	eventType, err := contractAbi.EventByID(vLog.Topics[0])
 	if err != nil { // unknown event -> ignored
@@ -316,6 +317,8 @@ func (ec *eth1Client) handleEvent(vLog types.Log, contractAbi abi.ABI) error {
 			ec.logger.Debug("Validator doesn't belong to operator",
 				zap.String("pubKey", hex.EncodeToString(parsed.PublicKey)))
 		}
+		ec.logger.Debug("Validator doesn't belong to operator",
+			zap.String("pubKey", hex.EncodeToString(parsed.PublicKey)), zap.Any("parsed", parsed))
 		// if there is no operator-private-key --> assuming that the event should be triggered (e.g. exporter)
 		if isEventBelongsToOperator || shareEncryptionKey == nil {
 			ec.fireEvent(vLog, *parsed)

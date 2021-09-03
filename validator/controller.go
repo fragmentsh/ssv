@@ -218,6 +218,7 @@ func (c *controller) onNewValidatorShare(validatorShare *validatorstorage.Share)
 		ETHNetwork:                 c.ethNetwork,
 		SignatureCollectionTimeout: c.signatureCollectionTimeout,
 	}
+	printValidatorShare(c.logger, validatorShare)
 	v := New(validatorOpts, c.db)
 	if added := c.AddValidator(pubKeyHex, v); added {
 		// start validator
