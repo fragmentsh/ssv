@@ -6,6 +6,8 @@ import (
 	"github.com/bloxapp/ssv/storage"
 	"github.com/bloxapp/ssv/storage/basedb"
 	"github.com/bloxapp/ssv/utils/threshold"
+	"math/rand"
+	"time"
 
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"testing"
@@ -50,10 +52,10 @@ func TestSaveAndGetValidatorStorage(t *testing.T) {
 	})
 
 	validatorShare := generateRandomValidatorShare()
-	require.NoError(t, collection.SaveValidatorShare(&validatorShare))
+	require.NoError(t, collection.SaveValidatorShare(validatorShare))
 
 	validatorShare2 := generateRandomValidatorShare()
-	require.NoError(t, collection.SaveValidatorShare(&validatorShare2))
+	require.NoError(t, collection.SaveValidatorShare(validatorShare2))
 
 	validatorShareByKey, found, err := collection.GetValidatorsShare(validatorShare.PublicKey.Serialize())
 	require.True(t, found)
@@ -65,7 +67,7 @@ func TestSaveAndGetValidatorStorage(t *testing.T) {
 	require.EqualValues(t, len(validators), 2)
 }
 
-func generateRandomValidatorShare() Share {
+func generateRandomValidatorShare() *Share {
 	threshold.Init()
 	sk := bls.SecretKey{}
 	sk.SetByCSPRNG()
@@ -90,10 +92,17 @@ func generateRandomValidatorShare() Share {
 		},
 	}
 
-	return Share{
+	return &Share{
 		NodeID:    1,
 		PublicKey: sk.GetPublicKey(),
 		ShareKey:  &sk,
 		Committee: ibftCommittee,
 	}
+}
+
+func randSleep() time.Duration {
+	min := 10
+	max := 100
+	randT := time.Duration(rand.Intn(max-min) + min)
+	return time.Millisecond * randT
 }
