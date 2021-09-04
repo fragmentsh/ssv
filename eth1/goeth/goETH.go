@@ -258,7 +258,6 @@ func (ec *eth1Client) syncSmartContractsEvents(fromBlock *big.Int) error {
 	query := ethereum.FilterQuery{
 		Addresses: []common.Address{contractAddress},
 		FromBlock: fromBlock,
-		//ToBlock: eth1.HexStringToSyncOffset("52CF38"),
 	}
 	logs, err := ec.conn.FilterLogs(ec.ctx, query)
 	if err != nil {
