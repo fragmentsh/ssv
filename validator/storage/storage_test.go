@@ -6,9 +6,6 @@ import (
 	"github.com/bloxapp/ssv/storage"
 	"github.com/bloxapp/ssv/storage/basedb"
 	"github.com/bloxapp/ssv/utils/threshold"
-	"math/rand"
-	"time"
-
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"testing"
 
@@ -100,9 +97,3 @@ func generateRandomValidatorShare() *Share {
 	}
 }
 
-func randSleep() time.Duration {
-	min := 10
-	max := 100
-	randT := time.Duration(rand.Intn(max-min) + min)
-	return time.Millisecond * randT
-}
