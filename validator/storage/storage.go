@@ -103,6 +103,10 @@ func (s *Collection) GetValidatorsShare(key []byte) (*Share, bool, error) {
 		return nil, found, err
 	}
 	share, err := (&Share{}).Deserialize(obj)
+	if share != nil && share.PublicKey != nil {
+		s.logger.Debug("got share", zap.String("key", string(key)),
+			zap.String("pubkey", share.PublicKey.SerializeToHexStr()))
+	}
 	return share, found, err
 }
 
