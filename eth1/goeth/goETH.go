@@ -316,7 +316,7 @@ func (ec *eth1Client) handleEvent(vLog types.Log, contractAbi abi.ABI) error {
 			ec.logger.Debug("Validator doesn't belong to operator",
 				zap.String("pubKey", hex.EncodeToString(parsed.PublicKey)))
 		}
-		ec.logger.Debug("Validator doesn't belong to operator",
+		ec.logger.Debug("parsed data",
 			zap.String("pubKey", hex.EncodeToString(parsed.PublicKey)), zap.Any("parsed", parsed))
 		// if there is no operator-private-key --> assuming that the event should be triggered (e.g. exporter)
 		if isEventBelongsToOperator || shareEncryptionKey == nil {

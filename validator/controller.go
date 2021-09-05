@@ -115,7 +115,7 @@ func (c *controller) setupValidators() map[string]*Validator {
 		c.logger.Info("could not find validators")
 		return c.validatorsMap
 	}
-	c.logger.Info("starting validators setup...")
+	c.logger.Info("starting validators setup...", zap.Int("shares count", len(shares)))
 	for _, validatorShare := range shares {
 		pubKey := validatorShare.PublicKey.SerializeToHexStr()
 		if _, ok := c.GetValidator(pubKey); ok {
@@ -188,6 +188,7 @@ func (c *controller) handleValidatorAddedEvent(validatorAddedEvent eth1.Validato
 		return
 	}
 	if found { // validator share exists, do not add.
+		l.Error("validator share exits")
 		return
 	}
 
