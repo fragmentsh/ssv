@@ -1,11 +1,12 @@
 package p2pv1
 
 import (
+	"log"
+
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"go.uber.org/zap"
-	"log"
 )
 
 var (
@@ -99,7 +100,7 @@ func (n *p2pNetwork) reportPeerIdentity(pid peer.ID) {
 		}
 	}
 	nodeState := n.idx.State(pid)
-	n.logger.Debug("peer identity",
+	n.logger.Info("peer identity",
 		zap.String("peer", pid.String()),
 		zap.String("forkv", forkv),
 		zap.String("nodeVersion", nodeVersion),
